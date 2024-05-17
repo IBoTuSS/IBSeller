@@ -1,0 +1,645 @@
+1:
+  # Имя для продажи и отображения
+  material: IRON_INGOT
+  # Перевод материала
+  translated_material: Железный слиток
+  # Количество (от 1 до 64)
+  amount: 16
+  # Цена за указанное количество (от min до max)
+  price:
+    min: 125
+    max: 250
+  # Количество предметов (от min до max)
+  count:
+    min: 500
+    max: 2500
+2:
+  material: ENDER_PEARL
+  translated_material: Жемчужина Эндера
+  amount: 16
+  price:
+    min: 80
+    max: 150
+  count:
+    min: 500
+    max: 2500
+3:
+  material: SUGAR
+  translated_material: Сахар
+  amount: 16
+  price:
+    min: 80
+    max: 150
+  count:
+    min: 500
+    max: 2500
+4:
+  material: PAPER
+  translated_material: Бумага
+  amount: 16
+  price:
+    min: 70
+    max: 120
+  count:
+    min: 500
+    max: 2500
+5:
+  material: GUNPOWDER
+  translated_material: Порох
+  amount: 16
+  price:
+    min: 50
+    max: 350
+  count:
+    min: 500
+    max: 2500
+6:
+  material: COCOA_BEANS
+  translated_material: Какао-бобы
+  amount: 16
+  price:
+    min: 100
+    max: 150
+  count:
+    min: 500
+    max: 2500
+7:
+  material: GLOWSTONE_DUST
+  translated_material: Светопыль
+  amount: 16
+  price:
+    min: 100
+    max: 150
+  count:
+    min: 500
+    max: 2500
+8:
+  material: BOOK
+  translated_material: Книга
+  amount: 16
+  price:
+    min: 150
+    max: 550
+  count:
+    min: 500
+    max: 2500
+9:
+  material: CARROT
+  translated_material: Морковь
+  amount: 16
+  price:
+    min: 110
+    max: 300
+  count:
+    min: 500
+    max: 2500
+10:
+  material: ROTTEN_FLESH
+  translated_material: Гнилая плоть
+  amount: 16
+  price:
+    min: 110
+    max: 300
+  count:
+    min: 500
+    max: 2500
+11:
+  material: SAND
+  translated_material: Песок
+  amount: 16
+  price:
+    min: 60
+    max: 120
+  count:
+    min: 500
+    max: 2500
+12:
+  material: GLOWSTONE
+  translated_material: Светокамень
+  amount: 16
+  price:
+    min: 100
+    max: 150
+  count:
+    min: 500
+    max: 2500
+13:
+  material: MAGMA_BLOCK
+  translated_material: Блок магмы
+  amount: 16
+  price:
+    min: 75
+    max: 250
+  count:
+    min: 500
+    max: 2500
+14:
+  material: CHORUS_FRUIT
+  translated_material: Плод хоруса
+  amount: 16
+  price:
+    min: 65
+    max: 125
+  count:
+    min: 500
+    max: 2500
+15:
+  material: WHEAT
+  translated_material: Пшеница
+  amount: 16
+  price:
+    min: 50
+    max: 350
+  count:
+    min: 500
+    max: 2500
+16:
+  material: MELON
+  translated_material: Арбуз
+  amount: 16
+  price:
+    min: 50
+    max: 350
+  count:
+    min: 500
+    max: 2500
+17:
+  material: SWEET_BERRIES
+  translated_material: Сладкие ягоды
+  amount: 16
+  price:
+    min: 50
+    max: 150
+  count:
+    min: 500
+    max: 2500
+18:
+  material: BEETROOT
+  translated_material: Свекла
+  amount: 16
+  price:
+    min: 60
+    max: 120
+  count:
+    min: 500
+    max: 2500
+19:
+  material: POTATO
+  translated_material: Картофель
+  amount: 16
+  price:
+    min: 35
+    max: 95
+  count:
+    min: 500
+    max: 2500
+20:
+  material: MAGMA_CREAM
+  translated_material: Магмовый крем
+  amount: 16
+  price:
+    min: 50
+    max: 110
+  count:
+    min: 500
+    max: 2500
+21:
+  material: SPIDER_EYE
+  translated_material: Паучий глаз
+  amount: 16
+  price:
+    min: 20
+    max: 65
+  count:
+    min: 500
+    max: 2500
+22:
+  material: ARROW
+  translated_material: Стрела
+  amount: 16
+  price:
+    min: 80
+    max: 100
+  count:
+    min: 500
+    max: 2500
+23:
+  material: BONE_BLOCK
+  translated_material: Костяной блок
+  amount: 16
+  price:
+    min: 150
+    max: 450
+  count:
+    min: 500
+    max: 2500
+24:
+  material: PUFFERFISH
+  translated_material: Рыба-ёж
+  amount: 16
+  price:
+    min: 380
+    max: 700
+  count:
+    min: 500
+    max: 2500
+25:
+  material: NETHER_WART
+  translated_material: Нижнерост
+  amount: 16
+  price:
+    min: 30
+    max: 125
+  count:
+    min: 500
+    max: 2500
+26:
+  material: DRAGON_BREATH
+  translated_material: Дыхание дракона
+  amount: 16
+  price:
+    min: 140
+    max: 860
+  count:
+    min: 500
+    max: 2500
+27:
+  material: EMERALD
+  translated_material: Изумруд
+  amount: 16
+  price:
+    min: 120
+    max: 500
+  count:
+    min: 500
+    max: 2500
+28:
+  material: WITHER_ROSE
+  translated_material: Роза иссушителя
+  amount: 16
+  price:
+    min: 150
+    max: 300
+  count:
+    min: 500
+    max: 2500
+29:
+  material: OBSIDIAN
+  translated_material: Обсидиан
+  amount: 16
+  price:
+    min: 185
+    max: 900
+  count:
+    min: 500
+    max: 2500
+30:
+  material: EGG
+  translated_material: Яйцо
+  amount: 16
+  price:
+    min: 25
+    max: 75
+  count:
+    min: 500
+    max: 2500
+31:
+  material: SHULKER_SHELL
+  translated_material: Панцирь шалкера
+  amount: 16
+  price:
+    min: 650
+    max: 1450
+  count:
+    min: 500
+    max: 2500
+32:
+  material: BRICK
+  translated_material: Кирпич
+  amount: 16
+  price:
+    min: 20
+    max: 50
+  count:
+    min: 500
+    max: 2500
+33:
+  material: ANCIENT_DEBRIS
+  translated_material: Древние обломки
+  amount: 16
+  price:
+    min: 4000
+    max: 12500
+  count:
+    min: 500
+    max: 2500
+34:
+  material: GHAST_TEAR
+  translated_material: Слеза гаста
+  amount: 16
+  price:
+    min: 1500
+    max: 5000
+  count:
+    min: 500
+    max: 2500
+35:
+  material: RABBIT_FOOT
+  translated_material: Кроличья лапка
+  amount: 16
+  price:
+    min: 300
+    max: 900
+  count:
+    min: 500
+    max: 2500
+36:
+  material: COAL
+  translated_material: Уголь
+  amount: 16
+  price:
+    min: 50
+    max: 150
+  count:
+    min: 500
+    max: 2500
+37:
+  material: BONE
+  translated_material: Кость
+  amount: 16
+  price:
+    min: 30
+    max: 80
+  count:
+    min: 500
+    max: 2500
+38:
+  material: LEATHER
+  translated_material: Кожа
+  amount: 16
+  price:
+    min: 150
+    max: 450
+  count:
+    min: 500
+    max: 2500
+39:
+  material: MELON_SEEDS
+  translated_material: Семена арбуза
+  amount: 16
+  price:
+    min: 50
+    max: 100
+  count:
+    min: 500
+    max: 2500
+40:
+  material: PUMPKIN_SEEDS
+  translated_material: Семена тыквы
+  amount: 16
+  price:
+    min: 50
+    max: 100
+  count:
+    min: 500
+    max: 2500
+41:
+  material: STRING
+  translated_material: Нить
+  amount: 16
+  price:
+    min: 30
+    max: 80
+  count:
+    min: 500
+    max: 2500
+42:
+  material: HONEYCOMB
+  translated_material: Соты
+  amount: 16
+  price:
+    min: 300
+    max: 1500
+  count:
+    min: 500
+    max: 2500
+43:
+  material: ENDER_CHEST
+  translated_material: Эндер-сундук
+  amount: 16
+  price:
+    min: 2000
+    max: 6500
+  count:
+    min: 500
+    max: 2500
+44:
+  material: COOKED_PORKCHOP
+  translated_material: Жареная свинина
+  amount: 16
+  price:
+    min: 150
+    max: 300
+  count:
+    min: 500
+    max: 2500
+45:
+  material: COOKED_BEEF
+  translated_material: Жареный стейк
+  amount: 16
+  price:
+    min: 150
+    max: 300
+  count:
+    min: 500
+    max: 2500
+46:
+  material: BAMBOO
+  translated_material: Бамбук
+  amount: 16
+  price:
+    min: 50
+    max: 450
+  count:
+    min: 500
+    max: 2500
+47:
+  material: PUMPKIN
+  translated_material: Тыква
+  amount: 16
+  price:
+    min: 130
+    max: 750
+  count:
+    min: 500
+    max: 2500
+48:
+  material: SUGAR_CANE
+  translated_material: Сахарный тростник
+  amount: 16
+  price:
+    min: 120
+    max: 400
+  count:
+    min: 500
+    max: 2500
+49:
+  material: COD
+  translated_material: Треска
+  amount: 16
+  price:
+    min: 50
+    max: 300
+  count:
+    min: 500
+    max: 2500
+50:
+  material: SALMON
+  translated_material: Лосось
+  amount: 16
+  price:
+    min: 150
+    max: 650
+  count:
+    min: 500
+    max: 2500
+51:
+  material: TROPICAL_FISH
+  translated_material: Тропическая рыба
+  amount: 16
+  price:
+    min: 500
+    max: 6500
+  count:
+    min: 500
+    max: 2500
+52:
+  material: SNOWBALL
+  translated_material: Снежок
+  amount: 16
+  price:
+    min: 5
+    max: 30
+  count:
+    min: 500
+    max: 2500
+53:
+  material: BLAZE_ROD
+  translated_material: Палка-блейза
+  amount: 16
+  price:
+    min: 80
+    max: 550
+  count:
+    min: 500
+    max: 2500
+54:
+  material: POPPED_CHORUS_FRUIT
+  translated_material: Приготовленный плод хоруса
+  amount: 16
+  price:
+    min: 30
+    max: 135
+  count:
+    min: 500
+    max: 2500
+55:
+  material: DIAMOND
+  translated_material: Алмаз
+  amount: 16
+  price:
+    min: 250
+    max: 850
+  count:
+    min: 500
+    max: 2500
+56:
+  material: GOLD_INGOT
+  translated_material: Золотой слиток
+  amount: 16
+  price:
+    min: 50
+    max: 450
+  count:
+    min: 500
+    max: 2500
+57:
+  material: NETHERITE_INGOT
+  translated_material: Незеритовый слиток
+  amount: 16
+  price:
+    min: 5000
+    max: 15000
+  count:
+    min: 500
+    max: 2500
+58:
+  material: SCUTE
+  translated_material: Черепашья чешуя
+  amount: 16
+  price:
+    min: 120
+    max: 300
+  count:
+    min: 500
+    max: 2500
+59:
+  material: KELP
+  translated_material: Водоросли
+  amount: 16
+  price:
+    min: 20
+    max: 100
+  count:
+    min: 500
+    max: 2500
+60:
+  material: NETHER_SPROUTS
+  translated_material: Нижнеростки
+  amount: 16
+  price:
+    min: 35
+    max: 125
+  count:
+    min: 500
+    max: 2500
+61:
+  material: CRIMSON_FUNGUS
+  translated_material: Багровый гриб
+  amount: 16
+  price:
+    min: 100
+    max: 450
+  count:
+    min: 500
+    max: 2500
+62:
+  material: WARPED_FUNGUS
+  translated_material: Искаженный гриб
+  amount: 16
+  price:
+    min: 100
+    max: 450
+  count:
+    min: 500
+    max: 2500
+63:
+  material: CRIMSON_ROOTS
+  translated_material: Багровые корни
+  amount: 16
+  price:
+    min: 35
+    max: 125
+  count:
+    min: 500
+    max: 2500
+64:
+  material: BROWN_MUSHROOM
+  translated_material: Коричневый гриб
+  amount: 16
+  price:
+    min: 50
+    max: 250
+  count:
+    min: 500
+    max: 2500

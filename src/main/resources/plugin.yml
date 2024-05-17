@@ -1,0 +1,17 @@
+name: IBSeller
+version: '${project.version}'
+main: ibotus.ibseller.IBSeller
+api-version: '1.16'
+authors: [IBoTuS]
+softdepend: [ Vault, PlaceholderAPI ]
+commands:
+  seller: {}
+permissions:
+  ibseller.reload:
+    default: op
+  ibseller.seller:
+    default: op
+  ibseller.regenerate:
+    default: op
+  ibseller.event-start:
+    default: op

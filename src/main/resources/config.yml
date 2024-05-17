@@ -1,0 +1,444 @@
+# Developer - https://t.me/IBoTuS
+
+# %ibseller_time% - Плейсхолдер для отображения времени до следующего обновления скупщика
+# %ibseller_event% - Плейсхолдер для отображения времени до следующего ивента
+
+# Список команд:
+# [close] - Команда закрытия скупщика при клике по предмету
+# [cmd] <command> - Выполнение команды при клике по предмету
+# [sound] <sound> - Выполнение звука для игрока при клике по предмету
+
+settings: # Настройки скупщика
+  update: 25 # Авто обновление скупщика в минутах
+
+event: # Настройки ивента
+  enable: true # Включить/Выключить ивент
+  time: 10 # Время в минутах
+  enchant: true # Подсветка предмета во время ивента
+  replace:
+    event-active: "#0EC8E2Активный" #Если ивент уже запущен
+    nick: "Никто" # Если никто не сдал ивентный предмет
+  give-reward: # Выдача награды игроку, который сдал наибольшее количество ивентных предметов
+    - 'p give %player% 10'
+  messages:
+    event-start: "#0EC8E2[✔] &fИвент успешно начат!"
+    event-running: "#0EC8E2[✘] &fИвент уже запущен!"
+    event-end: #Поддержка %material% чтобы вывести какой именно материал был дороже
+      - ""
+      - "&fИгрок #0EC8E2%player% &fпродал ивентный предмет на сумму #0EC8E2%player_price% ₴"
+      - ""
+  bossbar: # Настройки боссбара
+    enabled: true # Включить/Выключить боссбар
+    time: 10 # Время в секундах
+    percent: 20 # На сколько повышать цену в % во время ивента
+    message: "&f🔥 Цена предмета #0EC8E2%material% &fувеличена на #0EC8E2%percent%%"
+    color: BLUE # Цвет
+    style: SOLID # Стиль
+
+seller-upgrade: # Улучшение скупщика
+  multiplier: 1.0 # Начальный множитель
+  multiplierupgrade: 0.1 # Добавляется к множителю при улучшении
+  levels: 3 # Количество уровней
+  replace-levels:
+    0: "Начальный"
+    1: "I"
+    2: "II"
+    3: "III"
+    maximum: "Максимальный"
+  amount-upgrade: # Количество за улучшение
+    1: 10000
+    2: 15000
+    3: 25000
+    maximum: "Максимальный"
+  messages:
+    upgrade-level: # Сообщение, если уровень улучшен
+      - ""
+      - "#0EC8E2Скупщик &7| &fСкупщик был улучшен, теперь его уровень: #0EC8E2%levels%"
+      - ""
+    maximum-level: "#0EC8E2Скупщик &7| &fДостигнут максимальный уровень!"
+
+messages: #Сообщения скупщика
+  permission: "#0EC8E2[✘] &fУ вас нет прав для этой команды!"
+  reload: "#0EC8E2[✔] &fКонфигурация успешно перезагружена!"
+  seller-message: "#0EC8E2[✔] &fВы #0EC8E2успешно &fпродали #0EC8E2%material% &7x%amount% &fза #0EC8E2%price% $"
+  seller-error: "#0EC8E2[✘] &fНедостаточно #0EC8E2предметов &fдля продажу!"
+  seller-count: "#0EC8E2[✘] &fЭтот #0EC8E2предмет &fраспродан!"
+  seller-update:
+    - ""
+    - "#0EC8E2Скупщик &7| &fСкупщик #0EC8E2обновил &fсписок предметов!"
+    - ""
+  seller-event: #Поддержка %material% чтобы вывести какой именно материал стал дороже
+    - ""
+    - "#0EC8E2Скупник &7| &fСкупщик #0EC8E2начал &fивент!"
+    - ""
+
+sound: #Звуки скупщика
+  open-seller:
+    sound: BLOCK_NOTE_BLOCK_CHIME #Название звука
+    volume: 1.0 #Громкость
+    pitch: 1.0 #Темп
+  items-sell:
+    sound: BLOCK_NOTE_BLOCK_BELL
+    volume: 1.0
+    pitch: 1.0
+  items-error:
+    sound: BLOCK_NOTE_BLOCK_BASS
+    volume: 1.0
+    pitch: 1.0
+  seller-update:
+    sound: BLOCK_NOTE_BLOCK_PLING
+    volume: 1.0
+    pitch: 1.0
+  event-start:
+    sound: BLOCK_BEACON_POWER_SELECT
+    volume: 1.0
+    pitch: 1.0
+  upgrade-level:
+    sound: BLOCK_CONDUIT_ACTIVATE
+    volume: 1.0
+    pitch: 1.0
+  maximum-level:
+    sound: UI_TOAST_CHALLENGE_COMPLETE
+    volume: 1.0
+    pitch: 1.0
+
+inventory: #Инвентарь скупщика
+  size: 54 #Размер инвентаря
+  title: "               Скупщик" #Название инвентаря
+  slot-seller-item: #Слоты предметов
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+  lore-sell-item:
+    - " "
+    - " #0EC8E2&l| &fЦена за &7%amount%&f шт: #0EC8E2%price% $"
+    - " #0EC8E2&l| &fТекущий множитель: &7х%multiplier%&f"
+    - " #0EC8E2&l| &fОсталось: #0EC8E2%count%&f шт."
+    - " "
+    - " #0EC8E2&l⋀ #0EC8E2лкм &f- продать #0EC8E2%amount% шт."
+    - " #0EC8E2&l⋁ #0EC8E2пкм &f- продать #0EC8E2все"
+    - " "
+  slots-item:
+    0:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 0
+    1:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 1
+    2:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 2
+    3:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 3
+    4:
+      material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTFmYWQ1ZDJiODIyZmNlOGQ1OWJjZTA4NDE0YjlmODdmMjdhYTlkNzdhNzM4MjNhNThkZDUxN2VhODBiMmE1In19fQ==
+      custom-model-data: 0
+      commands: []
+      name: "#0EC8E2[⌛] &fИнформация скупщика"
+      lore:
+        - ""
+        - "#0EC8E2&l| &fТекущий уровень: #0EC8E2%levels%"
+        - "#0EC8E2&l| &fДо следующего уровня: #0EC8E2%total_sold%"
+        - ""
+        - "#0EC8E2&l| &fСледующее обновление: #0EC8E2%update%"
+        - ""
+      slot: 4
+    5:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 5
+    6:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 6
+    7:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 7
+    8:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 8
+    9:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 9
+    10:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 10
+    11:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 11
+    12:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 12
+    13:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 13
+    14:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 14
+    15:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 15
+    16:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 16
+    17:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 17
+    18:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 18
+    19:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 19
+    20:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 25
+    21:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 26
+    22:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 27
+    23:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 28
+    24:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 34
+    25:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 35
+    26:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 36
+    27:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 37
+    28:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 38
+    29:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 39
+    30:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 40
+    31:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 41
+    32:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 42
+    33:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 43
+    34:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 44
+    35:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 45
+    36:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 46
+    37:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 47
+    38:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 51
+    39:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 52
+    40:
+      material: BLUE_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 53
+    41:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 50
+    42:
+      material: GRAY_STAINED_GLASS_PANE
+      custom-model-data: 0
+      commands: []
+      name: "&e"
+      lore: []
+      slot: 48
+    43:
+      material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkxZDZlZGE4M2VkMmMyNGRjZGNjYjFlMzNkZjM2OTRlZWUzOTdhNTcwMTIyNTViZmM1NmEzYzI0NGJjYzQ3NCJ9fX0=
+      custom-model-data: 0
+      commands:
+        - '[sound] UI_BUTTON_CLICK'
+        - '[close]'
+      name: "#0EC8E2[✘] &fЗакрыть скупщика"
+      lore: []
+      slot: 49
