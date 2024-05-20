@@ -80,7 +80,15 @@ public class IBEvent {
 
         int currentPrice = IBData.getData().getInt("items." + randomItemKey + ".price");
         int eventTime = IBConfig.getConfig().getInt("event.bossbar.time");
-        int newPrice = currentPrice + currentPrice * IBConfig.getConfig().getInt("event.bossbar.percent") / 100;
+
+        int minPercent = IBConfig.getConfig().getInt("event.bossbar.percent.min");
+        int maxPercent = IBConfig.getConfig().getInt("event.bossbar.percent.max");
+
+        Random random = new Random();
+
+        int randomPercent = minPercent + random.nextInt(maxPercent - minPercent + 1);
+
+        int newPrice = currentPrice + currentPrice * randomPercent / 100;
         double multiplier = IBData.getData().getDouble("seller.multiplier");
         oldPrices.put(randomItemKey, currentPrice);
         IBData.getData().set("items." + randomItemKey + ".price", newPrice);
@@ -91,7 +99,7 @@ public class IBEvent {
         assert translatedMaterialName != null;
         bossBar = Bukkit.createBossBar(IBHexColor.color(Objects.requireNonNull(IBConfig.getConfig().getString("event.bossbar.message"))
                         .replace("%material%", translatedMaterialName)
-                        .replace("%percent%", String.valueOf(IBConfig.getConfig().getInt("event.bossbar.percent")))),
+                        .replace("%percent%", String.valueOf(randomPercent))),
                 BarColor.valueOf(IBConfig.getConfig().getString("event.bossbar.color")),
                 BarStyle.valueOf(IBConfig.getConfig().getString("event.bossbar.style")));
 

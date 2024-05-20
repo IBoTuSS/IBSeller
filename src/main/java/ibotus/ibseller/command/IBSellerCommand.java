@@ -78,6 +78,10 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("regenerate")) {
             if (sender.hasPermission("ibseller.regenerate")) {
+                if (IBEvent.isEventRunning()) {
+                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("event.messages.event-running"))));
+                    return true;
+                }
                 this.IBSellerUpdater.resetUpdateTime();
                 IBData.saveItems();
                 List<String> updateMessages = IBConfig.getConfig().getStringList("messages.seller-update");
