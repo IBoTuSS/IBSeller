@@ -29,7 +29,7 @@ public class IBSellerPlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.6";
+        return "1.9";
     }
 
     @Override

@@ -10,7 +10,6 @@ public class IBHexColor {
         if (input == null) {
             return null;
         }
-
         String text = Pattern.compile("#[a-fA-F0-9]{6}")
                 .matcher(input)
                 .replaceAll(match -> ChatColor.of(match.group()).toString());

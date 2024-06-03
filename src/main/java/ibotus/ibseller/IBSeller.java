@@ -42,11 +42,12 @@ public final class IBSeller extends JavaPlugin {
         IBSellerUpdater IBSellerUpdater = new IBSellerUpdater(this);
         IBInvSeller invSeller = new IBInvSeller(IBSellerUpdater, this);
         IBInventoryClose ibInventoryClose = new IBInventoryClose(invSeller);
+        IBUtils IBUtils = new IBUtils(IBSellerUpdater, invSeller);
         IBEventManager IBEventManager = new IBEventManager(this, invSeller);
         IBSellerCommand sellerCommand = new IBSellerCommand(this, invSeller, IBSellerUpdater, IBEventManager);
 
         getServer().getPluginManager().registerEvents(new IBInvSellerListener(econ, invSeller), this);
-        getServer().getPluginManager().registerEvents(new IBClickEvent(), this);
+        getServer().getPluginManager().registerEvents(new IBClickEvent(econ, IBUtils), this);
         getServer().getPluginManager().registerEvents(new IBPlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(ibInventoryClose, this);
 

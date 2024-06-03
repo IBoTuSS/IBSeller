@@ -3,13 +3,26 @@ package ibotus.ibseller.utils;
 import java.util.List;
 import java.util.Objects;
 
+import ibotus.ibseller.configurations.IBConfig;
 import ibotus.ibseller.configurations.IBData;
+import ibotus.ibseller.inventories.IBInvSeller;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class IBUtils {
+
+    private final IBSellerUpdater IBSellerUpdater;
+    private final IBInvSeller invSeller;
+
+    public IBUtils(IBSellerUpdater IBSellerUpdater, IBInvSeller invSeller) {
+        this.IBSellerUpdater = IBSellerUpdater;
+        this.invSeller = invSeller;
+    }
+
     public static ItemStack createItem(String materialName, String name, List<String> lore, Integer customModelData) {
         ItemStack item;
         if (materialName.startsWith("eyJ")) {
@@ -90,6 +103,21 @@ public class IBUtils {
             }
         }
         return null;
+    }
+
+    public void getRegeneratedItem() {
+        this.IBSellerUpdater.resetUpdateTime();
+        IBData.saveItems();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(this.invSeller.getTitle()))) {
+                onlinePlayer.closeInventory();
+            }
+            String soundKey = "sound.player-update";
+            Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
+            float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
+            float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+            onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
+        }
     }
 }
 
