@@ -39,7 +39,18 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.usage"))));
+            if (sender instanceof Player player) {
+                if (player.hasPermission("ibseller.seller")) {
+                    String soundKey = "sound.open-seller";
+                    Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
+                    float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
+                    float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+                    player.playSound(player.getLocation(), sound, volume, pitch);
+                    invSeller.openInventory(player, invSeller);
+                } else {
+                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
+                }
+            }
             return true;
         }
         switch (args[0].toLowerCase()) {
@@ -108,20 +119,6 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                     }
                 } else {
                     sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
-                }
-                break;
-            case "seller":
-                if (sender instanceof Player player) {
-                    if (player.hasPermission("ibseller.seller")) {
-                        String soundKey = "sound.open-seller";
-                        Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-                        float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-                        float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
-                        player.playSound(player.getLocation(), sound, volume, pitch);
-                        invSeller.openInventory(player, invSeller);
-                    } else {
-                        player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
-                    }
                 }
                 break;
             default:
