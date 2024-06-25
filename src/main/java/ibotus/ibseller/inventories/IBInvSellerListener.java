@@ -93,7 +93,7 @@ public class IBInvSellerListener implements Listener {
                                     IBUtils.removeItemsFromInventory(player, Material.getMaterial(materialName), amountToSell);
                                     double finalPrice = (double)price * multiplier;
                                     DecimalFormat df = new DecimalFormat("#.##");
-                                    finalPrice = Double.parseDouble(df.format(finalPrice));
+                                    finalPrice = Double.parseDouble(df.format(finalPrice).replace(',', '.'));
                                     this.econ.depositPlayer(player, finalPrice);
                                     String itemKey = IBUtils.getItemMaterialName(materialName);
                                     String translatedMaterialName = IBUtils.getTranslatedMaterialName(itemKey);
@@ -143,7 +143,7 @@ public class IBInvSellerListener implements Listener {
                                     IBUtils.removeItemsFromInventory(player, Material.getMaterial(materialName), amountToSell);
                                     double finalPrice = (double)price * multiplier * ((double)amountToSell / (double)amountInConfig);
                                     DecimalFormat df = new DecimalFormat("#.##");
-                                    finalPrice = Double.parseDouble(df.format(finalPrice));
+                                    finalPrice = Double.parseDouble(df.format(finalPrice).replace(',', '.'));
                                     this.econ.depositPlayer(player, finalPrice);
                                     player.sendMessage(IBHexColor.color(Objects.requireNonNull(IBConfig.getConfig().getString("messages.seller-message")).replace("%amount%", String.valueOf(amountToSell)).replace("%material%", (materialName)).replace("%price%", String.valueOf(finalPrice))));
                                     String soundKey = "sound.items-sell";
