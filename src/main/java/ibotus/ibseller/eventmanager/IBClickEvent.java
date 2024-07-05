@@ -5,6 +5,7 @@ import ibotus.ibseller.utils.IBHexColor;
 import ibotus.ibseller.utils.IBUtils;
 
 import net.milkbowl.vault.economy.Economy;
+import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -18,11 +19,13 @@ import java.util.Objects;
 public class IBClickEvent implements Listener {
 
     private final Economy econ;
+    private final PlayerPoints playerPoints;
     private final IBUtils ibUtils;
 
-    public IBClickEvent(Economy economy, IBUtils ibUtils) {
+    public IBClickEvent(Economy economy, PlayerPoints playerpoints, IBUtils ibUtils) {
         this.ibUtils = ibUtils;
         this.econ = economy;
+        this.playerPoints = playerpoints;
     }
 
     @EventHandler
@@ -60,17 +63,22 @@ public class IBClickEvent implements Listener {
                                     if (parts.length >= 2) {
                                         try {
                                             double cost = Double.parseDouble(parts[1]);
-                                            if (econ.has(player, cost)) {
-                                                econ.withdrawPlayer(player, cost);
-                                                this.ibUtils.getRegeneratedItem();
-                                                List<String> updateMessages = IBConfig.getConfig().getStringList("messages.player-update");
-                                                for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-                                                    for (String message : updateMessages) {
-                                                        onlinePlayer.sendMessage(IBHexColor.color(message.replace("%player%", player.getName())));
-                                                    }
+                                            String economyType = IBConfig.getConfig().getString("settings.update-economy", "Vault");
+                                            if (economyType.equalsIgnoreCase("Vault")) {
+                                                if (econ.has(player, cost)) {
+                                                    econ.withdrawPlayer(player, cost);
+                                                    updateSeller(player);
+                                                } else {
+                                                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.no-money"))));
+                                                }
+                                            } else if (economyType.equalsIgnoreCase("PlayerPoints")) {
+                                                if (playerPoints.getAPI().take(player.getUniqueId(), (int) cost)) {
+                                                    updateSeller(player);
+                                                } else {
+                                                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.no-money"))));
                                                 }
                                             } else {
-                                                player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.no-money"))));
+                                                Bukkit.getLogger().warning("Неподдерживаемый тип экономики: " + economyType);
                                             }
                                         } catch (NumberFormatException e) {
                                             Bukkit.getLogger().warning("Неверный формат команды обновления: " + cmd);
@@ -89,6 +97,16 @@ public class IBClickEvent implements Listener {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    private void updateSeller(Player player) {
+        this.ibUtils.getRegeneratedItem();
+        List<String> updateMessages = IBConfig.getConfig().getStringList("messages.player-update");
+        for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+            for (String message : updateMessages) {
+                onlinePlayer.sendMessage(IBHexColor.color(message.replace("%player%", player.getName())));
             }
         }
     }

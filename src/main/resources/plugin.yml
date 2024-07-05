@@ -3,7 +3,7 @@ version: '${project.version}'
 main: ibotus.ibseller.IBSeller
 api-version: '1.16'
 authors: [IBoTuS]
-softdepend: [ Vault, PlaceholderAPI ]
+softdepend: [ Vault, PlaceholderAPI, PlayerPoints ]
 commands:
   seller: {}
 permissions:

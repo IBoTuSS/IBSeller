@@ -12,6 +12,7 @@ import ibotus.ibseller.utils.*;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 public final class IBSeller extends JavaPlugin {
     private static Economy econ = null;
+    private static PlayerPoints playerPoints = null;
 
     private void msg(String msg) {
         String prefix = IBHexColor.color("&aIBSeller &7| ");
@@ -30,6 +32,12 @@ public final class IBSeller extends JavaPlugin {
     public void onEnable() {
         if (!setupEconomy()) {
             getLogger().severe("Не найдена зависимость Vault!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        if (!setupPlayerPoints()) {
+            getLogger().severe("Не найдена зависимость PlayerPoints!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -47,7 +55,7 @@ public final class IBSeller extends JavaPlugin {
         IBSellerCommand sellerCommand = new IBSellerCommand(this, invSeller, IBSellerUpdater, IBEventManager);
 
         getServer().getPluginManager().registerEvents(new IBInvSellerListener(econ, invSeller), this);
-        getServer().getPluginManager().registerEvents(new IBClickEvent(econ, IBUtils), this);
+        getServer().getPluginManager().registerEvents(new IBClickEvent(econ, playerPoints, IBUtils), this);
         getServer().getPluginManager().registerEvents(new IBPlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(ibInventoryClose, this);
 
@@ -85,6 +93,15 @@ public final class IBSeller extends JavaPlugin {
                 econ = rsp.getProvider();
                 return true;
             }
+        }
+    }
+
+    private boolean setupPlayerPoints() {
+        if (this.getServer().getPluginManager().getPlugin("PlayerPoints") == null) {
+            return false;
+        } else {
+            playerPoints = (PlayerPoints) this.getServer().getPluginManager().getPlugin("PlayerPoints");
+            return playerPoints != null;
         }
     }
 }
