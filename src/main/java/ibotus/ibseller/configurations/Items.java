@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 
-public class IBItems {
+public class Items {
     private static FileConfiguration items;
 
     public static void loadYaml(Plugin plugin) {

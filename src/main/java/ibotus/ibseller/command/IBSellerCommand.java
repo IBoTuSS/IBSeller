@@ -1,15 +1,15 @@
 package ibotus.ibseller.command;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.configurations.IBData;
-import ibotus.ibseller.configurations.IBItems;
-import ibotus.ibseller.eventmanager.IBEvent;
-import ibotus.ibseller.inventories.IBInvSeller;
-import ibotus.ibseller.utils.IBEventManager;
-import ibotus.ibseller.utils.IBHexColor;
-import ibotus.ibseller.utils.IBSellerUpdater;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.configurations.Data;
+import ibotus.ibseller.configurations.Items;
+import ibotus.ibseller.events.SellerEventListener;
+import ibotus.ibseller.inventories.InventorySeller;
+import ibotus.ibseller.utils.EventManager;
+import ibotus.ibseller.utils.HexColor;
+import ibotus.ibseller.utils.SellerUpdater;
 
-import ibotus.ibseller.utils.IBUtils;
+import ibotus.ibseller.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -26,15 +26,15 @@ import java.util.Objects;
 
 public class IBSellerCommand implements CommandExecutor, TabCompleter {
     private final JavaPlugin plugin;
-    private final IBInvSeller invSeller;
-    private final IBSellerUpdater IBSellerUpdater;
-    private final IBEvent ibEvent;
+    private final InventorySeller invSeller;
+    private final SellerUpdater SellerUpdater;
+    private final SellerEventListener sellerEventListener;
 
-    public IBSellerCommand(JavaPlugin plugin, IBInvSeller invSeller, IBSellerUpdater IBSellerUpdater, IBEventManager ibeventmanager) {
+    public IBSellerCommand(JavaPlugin plugin, InventorySeller invSeller, SellerUpdater SellerUpdater, EventManager ibeventmanager) {
         this.plugin = plugin;
         this.invSeller = invSeller;
-        this.IBSellerUpdater = IBSellerUpdater;
-        this.ibEvent = new IBEvent(plugin, invSeller, ibeventmanager);
+        this.SellerUpdater = SellerUpdater;
+        this.sellerEventListener = new SellerEventListener(plugin, invSeller, ibeventmanager);
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -42,13 +42,13 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
             if (sender instanceof Player player) {
                 if (player.hasPermission("ibseller.seller")) {
                     String soundKey = "sound.open-seller";
-                    Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-                    float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-                    float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+                    Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
+                    float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
+                    float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
                     player.playSound(player.getLocation(), sound, volume, pitch);
                     invSeller.openInventory(player, invSeller);
                 } else {
-                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
+                    player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
                 }
             }
             return true;
@@ -56,73 +56,73 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase()) {
             case "reload":
                 if (sender.hasPermission("ibseller.reload")) {
-                    IBConfig.loadYaml(this.plugin);
-                    IBData.loadYaml(this.plugin);
-                    IBItems.loadYaml(this.plugin);
-                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.reload"))));
+                    Config.loadYaml(this.plugin);
+                    Data.loadYaml(this.plugin);
+                    Items.loadYaml(this.plugin);
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.reload"))));
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
                 }
                 break;
             case "event-start":
                 if (sender.hasPermission("ibseller.event-start")) {
-                    if (IBEvent.isEventRunning()) {
-                        sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("event.messages.event-running"))));
+                    if (SellerEventListener.isEventRunning()) {
+                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-running"))));
                         return true;
                     }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(this.invSeller.getTitle()))) {
+                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
                             onlinePlayer.closeInventory();
                         }
                         String soundKey = "sound.event-start";
-                        Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-                        float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-                        float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+                        Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
+                        float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
+                        float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
                         onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
                     }
-                    this.ibEvent.startEvent();
-                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("event.messages.event-start"))));
-                    List<String> event = IBConfig.getConfig().getStringList("messages.seller-event");
-                    String translatedMaterialName = IBUtils.getTranslatedMaterialName(IBEvent.randomItemKey);
+                    this.sellerEventListener.startEvent();
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-start"))));
+                    List<String> event = Config.getConfig().getStringList("messages.seller-event");
+                    String translatedMaterialName = Utils.getTranslatedMaterialName(SellerEventListener.randomItemKey);
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
                         for (String message : event) {
-                            onlinePlayer.sendMessage(IBHexColor.color(message.replace("%material%", translatedMaterialName)));
+                            onlinePlayer.sendMessage(HexColor.color(message.replace("%material%", translatedMaterialName)));
                         }
                     }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
                 }
                 break;
             case "regenerate":
                 if (sender.hasPermission("ibseller.regenerate")) {
-                    if (IBEvent.isEventRunning()) {
-                        sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("event.messages.event-running"))));
+                    if (SellerEventListener.isEventRunning()) {
+                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-running"))));
                         return true;
                     }
-                    this.IBSellerUpdater.resetUpdateTime();
-                    IBData.saveItems();
-                    List<String> updateMessages = IBConfig.getConfig().getStringList("messages.seller-update");
+                    this.SellerUpdater.resetUpdateTime();
+                    Data.saveItems();
+                    List<String> updateMessages = Config.getConfig().getStringList("messages.seller-update");
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
                         for (String message : updateMessages) {
-                            onlinePlayer.sendMessage(IBHexColor.color(message));
+                            onlinePlayer.sendMessage(HexColor.color(message));
                         }
                     }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(this.invSeller.getTitle()))) {
+                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
                             onlinePlayer.closeInventory();
                         }
                         String soundKey = "sound.seller-update";
-                        Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-                        float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-                        float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+                        Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
+                        float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
+                        float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
                         onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
                     }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
                 }
                 break;
             default:
-                sender.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.usage"))));
+                sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.usage"))));
                 break;
         }
         return true;

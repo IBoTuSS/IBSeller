@@ -1,10 +1,10 @@
-package ibotus.ibseller.eventmanager;
+package ibotus.ibseller.events;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.configurations.IBData;
-import ibotus.ibseller.inventories.IBInvSeller;
-import ibotus.ibseller.utils.IBEventManager;
-import ibotus.ibseller.utils.IBHexColor;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.configurations.Data;
+import ibotus.ibseller.inventories.InventorySeller;
+import ibotus.ibseller.utils.EventManager;
+import ibotus.ibseller.utils.HexColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -19,39 +19,35 @@ import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class IBEvent {
+public class SellerEventListener {
     private final JavaPlugin plugin;
-    private final IBInvSeller invSeller;
+    private final InventorySeller invSeller;
     private final HashMap<String, Integer> oldPrices = new HashMap<>();
     public static final HashMap<String, Integer> playerSales = new HashMap<>();
-    public static final HashMap<String, Integer> playerTotalSales = new HashMap<>();
     public static boolean isEventRunning = false;
     public static String randomItemKey;
     public static BossBar bossBar;
-    private final IBEventManager ibEventManager;
-
+    private final EventManager eventManager;
 
     public static boolean isEventRunning() {
         return isEventRunning;
     }
 
-    public IBEvent(JavaPlugin plugin, IBInvSeller invSeller,IBEventManager ibeventmanager) {
+    public SellerEventListener(JavaPlugin plugin, InventorySeller invSeller, EventManager eventManager) {
         this.plugin = plugin;
         this.invSeller = invSeller;
-        this.ibEventManager = ibeventmanager;
+        this.eventManager = eventManager;
     }
 
     public static boolean isEventItem(ItemStack item) {
         String currentItemMaterialName = item.getType().name();
-
-        String eventItemMaterialName = IBData.getData().getString("items." + randomItemKey + ".material");
-
+        String eventItemMaterialName = Data.getData().getString("items." + randomItemKey + ".material");
         return currentItemMaterialName.equals(eventItemMaterialName);
     }
 
     public boolean isItemAvailableInSeller(String itemMaterialName) {
-        for (String key : Objects.requireNonNull(IBData.getData().getConfigurationSection("items")).getKeys(false)) {
-            String materialName = IBData.getData().getString("items." + key + ".material");
+        for (String key : Objects.requireNonNull(Data.getData().getConfigurationSection("items")).getKeys(false)) {
+            String materialName = Data.getData().getString("items." + key + ".material");
             if (materialName != null && materialName.equalsIgnoreCase(itemMaterialName)) {
                 return true;
             }
@@ -59,17 +55,16 @@ public class IBEvent {
         return false;
     }
 
-
     public void startEvent() {
         if (isEventRunning) {
             return;
         }
 
-        List<String> itemKeys = new ArrayList<>(Objects.requireNonNull(IBData.getData().getConfigurationSection("items")).getKeys(false));
+        List<String> itemKeys = new ArrayList<>(Objects.requireNonNull(Data.getData().getConfigurationSection("items")).getKeys(false));
         randomItemKey = itemKeys.get(new SecureRandom().nextInt(itemKeys.size()));
 
-        String materialName = IBData.getData().getString("items." + randomItemKey + ".material");
-        String translatedMaterialName = IBData.getData().getString("items." + randomItemKey + ".translated_material");
+        String materialName = Data.getData().getString("items." + randomItemKey + ".material");
+        String translatedMaterialName = Data.getData().getString("items." + randomItemKey + ".translated_material");
 
         if (!isItemAvailableInSeller(materialName)) {
             Bukkit.getLogger().warning("Event item '" + materialName + "' not available in the seller slots.");
@@ -78,30 +73,29 @@ public class IBEvent {
 
         isEventRunning = true;
 
-        int currentPrice = IBData.getData().getInt("items." + randomItemKey + ".price");
-        int eventTime = IBConfig.getConfig().getInt("event.bossbar.time");
+        int currentPrice = Data.getData().getInt("items." + randomItemKey + ".price");
+        int eventTime = Config.getConfig().getInt("event.bossbar.time");
 
-        int minPercent = IBConfig.getConfig().getInt("event.bossbar.percent.min");
-        int maxPercent = IBConfig.getConfig().getInt("event.bossbar.percent.max");
+        int minPercent = Config.getConfig().getInt("event.bossbar.percent.min");
+        int maxPercent = Config.getConfig().getInt("event.bossbar.percent.max");
 
         Random random = new Random();
-
         int randomPercent = minPercent + random.nextInt(maxPercent - minPercent + 1);
 
         int newPrice = currentPrice + currentPrice * randomPercent / 100;
-        double multiplier = IBData.getData().getDouble("seller.multiplier");
+        double multiplier = Data.getData().getDouble("seller.multiplier");
         oldPrices.put(randomItemKey, currentPrice);
-        IBData.getData().set("items." + randomItemKey + ".price", newPrice);
-        IBData.saveData();
+        Data.getData().set("items." + randomItemKey + ".price", newPrice);
+        Data.saveData();
         if (materialName == null) {
             throw new NullPointerException("Material name is null");
         }
         assert translatedMaterialName != null;
-        bossBar = Bukkit.createBossBar(IBHexColor.color(Objects.requireNonNull(IBConfig.getConfig().getString("event.bossbar.message"))
+        bossBar = Bukkit.createBossBar(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.bossbar.message"))
                         .replace("%material%", translatedMaterialName)
                         .replace("%percent%", String.valueOf(randomPercent))),
-                BarColor.valueOf(IBConfig.getConfig().getString("event.bossbar.color")),
-                BarStyle.valueOf(IBConfig.getConfig().getString("event.bossbar.style")));
+                BarColor.valueOf(Config.getConfig().getString("event.bossbar.color")),
+                BarStyle.valueOf(Config.getConfig().getString("event.bossbar.style")));
 
         new BukkitRunnable() {
             int timeLeft = eventTime;
@@ -110,42 +104,40 @@ public class IBEvent {
             public void run() {
                 if (timeLeft <= 0) {
                     bossBar.removeAll();
-                    IBData.getData().set("items." + randomItemKey + ".price", oldPrices.get(randomItemKey));
-                    IBData.saveData();
+                    Data.getData().set("items." + randomItemKey + ".price", oldPrices.get(randomItemKey));
+                    Data.saveData();
                     isEventRunning = false;
-                    ibEventManager.resetUpdateTime();
-                    String topSeller;
-                    double topSales;
+                    eventManager.resetUpdateTime();
+                    String topSeller = null;
+                    double topSales = 0;
                     if (!playerSales.isEmpty()) {
-                        topSeller = Collections.max(playerTotalSales.entrySet(), Map.Entry.comparingByValue()).getKey();
-                        double rawTopSales = playerTotalSales.get(topSeller);
+                        topSeller = Collections.max(playerSales.entrySet(), Map.Entry.comparingByValue()).getKey();
+                        double rawTopSales = playerSales.get(topSeller);
                         DecimalFormat df = new DecimalFormat("#.##");
                         topSales = Double.parseDouble(df.format(rawTopSales * multiplier));
                     } else {
-                        topSeller = IBConfig.getConfig().getString("event.replace.nick");
-                        topSales = 0;
+                        topSeller = Config.getConfig().getString("event.replace.nick");
                     }
-                    List<String> endEventMessages = IBConfig.getConfig().getStringList("event.messages.event-end");
+                    List<String> endEventMessages = Config.getConfig().getStringList("event.messages.event-end");
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
                         for (String message : endEventMessages) {
                             assert topSeller != null;
-                            onlinePlayer.sendMessage(IBHexColor.color(message.replace("%player%", topSeller).replace("%player_price%", String.valueOf(topSales)).replace("%material%", translatedMaterialName)));
+                            onlinePlayer.sendMessage(HexColor.color(message.replace("%player%", topSeller).replace("%player_price%", String.valueOf(topSales)).replace("%material%", translatedMaterialName)));
                         }
                     }
                     assert topSeller != null;
-                    if (!topSeller.equals(IBConfig.getConfig().getString("event.replace.nick"))) {
-                        List<String> rewardCommands = IBConfig.getConfig().getStringList("event.give-reward");
+                    if (!topSeller.equals(Config.getConfig().getString("event.replace.nick"))) {
+                        List<String> rewardCommands = Config.getConfig().getStringList("event.give-reward");
                         for (String command : rewardCommands) {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", topSeller));
                         }
                     }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(invSeller.getTitle()))) {
+                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                             onlinePlayer.closeInventory();
                         }
                     }
                     playerSales.clear();
-                    playerTotalSales.clear();
                     this.cancel();
                 } else {
                     bossBar.setProgress((double) timeLeft / eventTime);
@@ -156,4 +148,5 @@ public class IBEvent {
         Bukkit.getOnlinePlayers().forEach(bossBar::addPlayer);
     }
 }
+
 

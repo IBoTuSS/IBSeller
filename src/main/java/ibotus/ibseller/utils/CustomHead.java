@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class IBCustomHead {
+public class CustomHead {
 
     public static ItemStack getSkull(String url, String path) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);

@@ -3,9 +3,9 @@ package ibotus.ibseller.utils;
 import java.util.List;
 import java.util.Objects;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.configurations.IBData;
-import ibotus.ibseller.inventories.IBInvSeller;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.configurations.Data;
+import ibotus.ibseller.inventories.InventorySeller;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,20 +13,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class IBUtils {
+public class Utils {
 
-    private final IBSellerUpdater IBSellerUpdater;
-    private final IBInvSeller invSeller;
+    private final SellerUpdater SellerUpdater;
+    private final InventorySeller invSeller;
 
-    public IBUtils(IBSellerUpdater IBSellerUpdater, IBInvSeller invSeller) {
-        this.IBSellerUpdater = IBSellerUpdater;
+    public Utils(SellerUpdater SellerUpdater, InventorySeller invSeller) {
+        this.SellerUpdater = SellerUpdater;
         this.invSeller = invSeller;
     }
 
     public static ItemStack createItem(String materialName, String name, List<String> lore, Integer customModelData) {
         ItemStack item;
         if (materialName.startsWith("eyJ")) {
-            item = IBCustomHead.getSkull(materialName, null);
+            item = CustomHead.getSkull(materialName, null);
         } else {
             Material material = Material.getMaterial(materialName);
             assert (material != null);
@@ -92,12 +92,12 @@ public class IBUtils {
     }
 
     public static String getTranslatedMaterialName(String itemKey) {
-        return IBData.getData().getString("items." + itemKey + ".translated_material");
+        return Data.getData().getString("items." + itemKey + ".translated_material");
     }
 
     public static String getItemMaterialName(String materialName) {
-        for (String key : Objects.requireNonNull(IBData.getData().getConfigurationSection("items")).getKeys(false)) {
-            String currentMaterialName = IBData.getData().getString("items." + key + ".material");
+        for (String key : Objects.requireNonNull(Data.getData().getConfigurationSection("items")).getKeys(false)) {
+            String currentMaterialName = Data.getData().getString("items." + key + ".material");
             if (currentMaterialName != null && currentMaterialName.equalsIgnoreCase(materialName)) {
                 return key;
             }
@@ -106,16 +106,16 @@ public class IBUtils {
     }
 
     public void getRegeneratedItem() {
-        this.IBSellerUpdater.resetUpdateTime();
-        IBData.saveItems();
+        this.SellerUpdater.resetUpdateTime();
+        Data.saveItems();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(this.invSeller.getTitle()))) {
+            if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
                 onlinePlayer.closeInventory();
             }
             String soundKey = "sound.player-update";
-            Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-            float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-            float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+            Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
+            float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
+            float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
             onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
         }
     }

@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 
-public class IBConfig {
+public class Config {
     private static FileConfiguration config;
 
     public static void loadYaml(Plugin plugin) {

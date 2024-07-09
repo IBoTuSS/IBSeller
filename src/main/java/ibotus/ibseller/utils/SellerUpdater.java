@@ -2,21 +2,21 @@ package ibotus.ibseller.utils;
 
 import java.util.List;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.configurations.IBData;
-import ibotus.ibseller.inventories.IBInvSeller;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.configurations.Data;
+import ibotus.ibseller.inventories.InventorySeller;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class IBSellerUpdater {
+public class SellerUpdater {
 
     private final JavaPlugin plugin;
     private long lastUpdateTime;
 
-    public IBSellerUpdater(JavaPlugin plugin) {
+    public SellerUpdater(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -24,33 +24,33 @@ public class IBSellerUpdater {
         this.lastUpdateTime = System.currentTimeMillis();
     }
 
-    public void start(IBInvSeller invSeller) {
-        int updateInterval = IBConfig.getConfig().getInt("settings.update") * 60 * 20;
+    public void start(InventorySeller invSeller) {
+        int updateInterval = Config.getConfig().getInt("settings.update") * 60 * 20;
         Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
             resetUpdateTime();
-            IBData.saveItems();
+            Data.saveItems();
             broadcastUpdateMessages();
             closeInventoryAndPlaySound(invSeller);
         }, 0L, updateInterval);
     }
 
     private void broadcastUpdateMessages() {
-        List<String> updateMessages = IBConfig.getConfig().getStringList("messages.seller-update");
+        List<String> updateMessages = Config.getConfig().getStringList("messages.seller-update");
         for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
             for (String message : updateMessages) {
-                onlinePlayer.sendMessage(IBHexColor.color(message));
+                onlinePlayer.sendMessage(HexColor.color(message));
             }
         }
     }
 
 
-    private void closeInventoryAndPlaySound(IBInvSeller invSeller) {
+    private void closeInventoryAndPlaySound(InventorySeller invSeller) {
         String soundKey = "sound.seller-update";
-        Sound sound = Sound.valueOf(IBConfig.getConfig().getString(soundKey + ".sound"));
-        float volume = (float) IBConfig.getConfig().getDouble(soundKey + ".volume");
-        float pitch = (float) IBConfig.getConfig().getDouble(soundKey + ".pitch");
+        Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
+        float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
+        float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (onlinePlayer.getOpenInventory().getTitle().equals(IBHexColor.color(invSeller.getTitle()))) {
+            if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                 onlinePlayer.closeInventory();
             }
             onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
@@ -59,7 +59,7 @@ public class IBSellerUpdater {
 
     public String getRemainingTime() {
         int timePassed = (int)((System.currentTimeMillis() - this.lastUpdateTime) / 1000L);
-        int updateInterval = IBConfig.getConfig().getInt("settings.update") * 60;
+        int updateInterval = Config.getConfig().getInt("settings.update") * 60;
         int timeLeft = updateInterval - timePassed;
         return formatTime(timeLeft);
     }

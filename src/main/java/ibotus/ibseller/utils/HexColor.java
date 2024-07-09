@@ -4,7 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 
 import java.util.regex.Pattern;
 
-public class IBHexColor {
+public class HexColor {
 
     public static String color(String input) {
         if (input == null) {

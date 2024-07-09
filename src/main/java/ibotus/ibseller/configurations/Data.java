@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class IBData {
+public class Data {
     private static FileConfiguration data;
     private static File file;
     private static final Random random = new Random();
@@ -40,9 +40,9 @@ public class IBData {
 
     public static void saveItems() {
         data.set("items", null);
-        Set<String> itemKeys = new HashSet<>(IBItems.getItems().getKeys(false));
+        Set<String> itemKeys = new HashSet<>(Items.getItems().getKeys(false));
         List<String> itemKeysList = new ArrayList<>(itemKeys);
-        int slots = IBConfig.getConfig().getIntegerList("inventory.slot-seller-item").size();
+        int slots = Config.getConfig().getIntegerList("inventory.slot-seller-item").size();
         Set<String> usedKeys = new HashSet<>();
         for (int i = 0; i < slots; ++i) {
             Collections.shuffle(itemKeysList);
@@ -52,7 +52,7 @@ public class IBData {
                 key = itemKeysList.get(i);
             }
             usedKeys.add(key);
-            ConfigurationSection itemSection = IBItems.getItems().getConfigurationSection(key);
+            ConfigurationSection itemSection = Items.getItems().getConfigurationSection(key);
             assert itemSection != null;
             String materialName = itemSection.getString(".material");
             String translatedMaterialName = itemSection.getString(".translated_material");
@@ -72,7 +72,7 @@ public class IBData {
         }
         setDefaultIfNotSet("seller.total", 0);
         setDefaultIfNotSet("seller.level", 0);
-        setDefaultIfNotSet("seller.multiplier", IBConfig.getConfig().getDouble("seller-upgrade.multiplier"));
+        setDefaultIfNotSet("seller.multiplier", Config.getConfig().getDouble("seller-upgrade.multiplier"));
         saveData();
     }
 

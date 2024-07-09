@@ -1,18 +1,20 @@
 package ibotus.ibseller;
 
 import ibotus.ibseller.command.IBSellerCommand;
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.configurations.IBData;
-import ibotus.ibseller.configurations.IBItems;
-import ibotus.ibseller.eventmanager.IBClickEvent;
-import ibotus.ibseller.events.IBInventoryClose;
-import ibotus.ibseller.events.IBPlayerJoinListener;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.configurations.Data;
+import ibotus.ibseller.configurations.Items;
+import ibotus.ibseller.events.InventoryClickListener;
+import ibotus.ibseller.events.InventoryCloseListener;
+import ibotus.ibseller.events.InventorySellerListener;
+import ibotus.ibseller.events.PlayerJoinListener;
 import ibotus.ibseller.inventories.*;
 import ibotus.ibseller.utils.*;
 
 import net.milkbowl.vault.economy.Economy;
 
 import org.black_ixx.playerpoints.PlayerPoints;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,49 +26,44 @@ public final class IBSeller extends JavaPlugin {
     private static PlayerPoints playerPoints = null;
 
     private void msg(String msg) {
-        String prefix = IBHexColor.color("&aIBSeller &7| ");
-        Bukkit.getConsoleSender().sendMessage(IBHexColor.color(prefix + msg));
+        String prefix = HexColor.color("&aIBSeller &7| ");
+        Bukkit.getConsoleSender().sendMessage(HexColor.color(prefix + msg));
     }
 
     @Override
     public void onEnable() {
         if (!setupEconomy()) {
-            getLogger().severe("Не найдена зависимость Vault!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            getLogger().severe("Vault не установлен!");
         }
-
         if (!setupPlayerPoints()) {
-            getLogger().severe("Не найдена зависимость PlayerPoints!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            getLogger().severe("PlayerPoints не установлен!");
         }
 
-        IBData.loadYaml(this);
-        IBConfig.loadYaml(this);
-        IBItems.loadYaml(this);
-        IBData.saveItems();
+        Data.loadYaml(this);
+        Config.loadYaml(this);
+        Items.loadYaml(this);
+        Data.saveItems();
 
-        IBSellerUpdater IBSellerUpdater = new IBSellerUpdater(this);
-        IBInvSeller invSeller = new IBInvSeller(IBSellerUpdater, this);
-        IBInventoryClose ibInventoryClose = new IBInventoryClose(invSeller);
-        IBUtils IBUtils = new IBUtils(IBSellerUpdater, invSeller);
-        IBEventManager IBEventManager = new IBEventManager(this, invSeller);
-        IBSellerCommand sellerCommand = new IBSellerCommand(this, invSeller, IBSellerUpdater, IBEventManager);
+        SellerUpdater SellerUpdater = new SellerUpdater(this);
+        InventorySeller invSeller = new InventorySeller(SellerUpdater, this);
+        InventoryCloseListener inventoryCloseListener = new InventoryCloseListener(invSeller);
+        Utils Utils = new Utils(SellerUpdater, invSeller);
+        EventManager EventManager = new EventManager(this, invSeller);
+        IBSellerCommand sellerCommand = new IBSellerCommand(this, invSeller, SellerUpdater, EventManager);
 
-        getServer().getPluginManager().registerEvents(new IBInvSellerListener(econ, invSeller), this);
-        getServer().getPluginManager().registerEvents(new IBClickEvent(econ, playerPoints, IBUtils), this);
-        getServer().getPluginManager().registerEvents(new IBPlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(ibInventoryClose, this);
+        getServer().getPluginManager().registerEvents(new InventorySellerListener(econ, invSeller), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(econ, playerPoints, Utils), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(inventoryCloseListener, this);
 
         Objects.requireNonNull(getCommand("seller")).setExecutor(sellerCommand);
         Objects.requireNonNull(getCommand("seller")).setTabCompleter(sellerCommand);
 
-        IBSellerUpdater.start(invSeller);
-        IBEventManager.startEventTimer();
+        SellerUpdater.start(invSeller);
+        EventManager.startEventTimer();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new IBSellerPlaceholders(IBSellerUpdater, IBEventManager).register();
+            new Placeholders(SellerUpdater, EventManager).register();
         }
 
         Bukkit.getConsoleSender().sendMessage("");
@@ -83,25 +80,26 @@ public final class IBSeller extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
-        } else {
-            RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp == null) {
-                return false;
-            } else {
-                econ = rsp.getProvider();
-                return true;
-            }
         }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return true;
     }
 
     private boolean setupPlayerPoints() {
-        if (this.getServer().getPluginManager().getPlugin("PlayerPoints") == null) {
+        if (getServer().getPluginManager().getPlugin("PlayerPoints") == null) {
             return false;
-        } else {
-            playerPoints = (PlayerPoints) this.getServer().getPluginManager().getPlugin("PlayerPoints");
-            return playerPoints != null;
         }
+        RegisteredServiceProvider<PlayerPoints> rsp = getServer().getServicesManager().getRegistration(PlayerPoints.class);
+        if (rsp == null) {
+            return false;
+        }
+        playerPoints = rsp.getProvider();
+        return true;
     }
 }

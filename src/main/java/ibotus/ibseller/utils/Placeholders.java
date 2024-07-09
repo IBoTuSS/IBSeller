@@ -1,20 +1,20 @@
 package ibotus.ibseller.utils;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.eventmanager.IBEvent;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.events.SellerEventListener;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class IBSellerPlaceholders extends PlaceholderExpansion {
+public class Placeholders extends PlaceholderExpansion {
 
-    private final IBSellerUpdater ibSellerUpdater;
-    private final IBEventManager ibEventManager;
+    private final SellerUpdater sellerUpdater;
+    private final EventManager eventManager;
 
-    public IBSellerPlaceholders(IBSellerUpdater ibSellerUpdater, IBEventManager ibeventmanager) {
-        this.ibSellerUpdater = ibSellerUpdater;
-        this.ibEventManager = ibeventmanager;
+    public Placeholders(SellerUpdater sellerUpdater, EventManager ibeventmanager) {
+        this.sellerUpdater = sellerUpdater;
+        this.eventManager = ibeventmanager;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class IBSellerPlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.0";
+        return "2.3";
     }
 
     @Override
@@ -39,14 +39,14 @@ public class IBSellerPlaceholders extends PlaceholderExpansion {
         }
 
         if ("time".equals(identifier)) {
-            return ibSellerUpdater.getRemainingTime();
+            return sellerUpdater.getRemainingTime();
         }
 
         if ("event".equals(identifier)) {
-            if (IBEvent.isEventRunning) {
-                return IBHexColor.color(IBConfig.getConfig().getString("event.replace.event-active"));
+            if (SellerEventListener.isEventRunning) {
+                return HexColor.color(Config.getConfig().getString("event.replace.event-active"));
             } else {
-                return ibEventManager.getRemainingTime();
+                return eventManager.getRemainingTime();
             }
         }
 

@@ -1,8 +1,8 @@
-package ibotus.ibseller.eventmanager;
+package ibotus.ibseller.events;
 
-import ibotus.ibseller.configurations.IBConfig;
-import ibotus.ibseller.utils.IBHexColor;
-import ibotus.ibseller.utils.IBUtils;
+import ibotus.ibseller.configurations.Config;
+import ibotus.ibseller.utils.HexColor;
+import ibotus.ibseller.utils.Utils;
 
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
@@ -16,29 +16,29 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.List;
 import java.util.Objects;
 
-public class IBClickEvent implements Listener {
+public class InventoryClickListener implements Listener {
 
     private final Economy econ;
     private final PlayerPoints playerPoints;
-    private final IBUtils ibUtils;
+    private final Utils utils;
 
-    public IBClickEvent(Economy economy, PlayerPoints playerpoints, IBUtils ibUtils) {
-        this.ibUtils = ibUtils;
+    public InventoryClickListener(Economy economy, PlayerPoints playerpoints, Utils utils) {
+        this.utils = utils;
         this.econ = economy;
         this.playerPoints = playerpoints;
     }
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
-        String title = IBConfig.getConfig().getString("inventory.title");
-        if (title != null && event.getView().getTitle().equals(IBHexColor.color(title))) {
+        String title = Config.getConfig().getString("inventory.title");
+        if (title != null && event.getView().getTitle().equals(HexColor.color(title))) {
             event.setCancelled(true);
             int clickedSlot = event.getRawSlot();
             if (clickedSlot >= 0 && clickedSlot < event.getInventory().getSize()) {
-                for (String slotStr : Objects.requireNonNull(IBConfig.getConfig().getConfigurationSection("inventory.slots-item")).getKeys(false)) {
-                    int slot = IBConfig.getConfig().getInt("inventory.slots-item." + slotStr + ".slot");
+                for (String slotStr : Objects.requireNonNull(Config.getConfig().getConfigurationSection("inventory.slots-item")).getKeys(false)) {
+                    int slot = Config.getConfig().getInt("inventory.slots-item." + slotStr + ".slot");
                     if (clickedSlot == slot) {
-                        List<String> commands = IBConfig.getConfig().getStringList("inventory.slots-item." + slotStr + ".commands");
+                        List<String> commands = Config.getConfig().getStringList("inventory.slots-item." + slotStr + ".commands");
                         Player player = (Player) event.getWhoClicked();
                         for (String cmd : commands) {
                             try {
@@ -56,26 +56,26 @@ public class IBClickEvent implements Listener {
                                         Bukkit.getLogger().warning("Неверное название звука: " + soundName);
                                     }
                                 } else if (cmd.startsWith("[update]")) {
-                                    if (IBEvent.isEventRunning()) {
-                                        player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.event-running"))));
+                                    if (SellerEventListener.isEventRunning()) {
+                                        player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.event-running"))));
                                     }
                                     String[] parts = cmd.split(" ");
                                     if (parts.length >= 2) {
                                         try {
                                             double cost = Double.parseDouble(parts[1]);
-                                            String economyType = IBConfig.getConfig().getString("settings.update-economy", "Vault");
+                                            String economyType = Config.getConfig().getString("settings.update-economy", "Vault");
                                             if (economyType.equalsIgnoreCase("Vault")) {
                                                 if (econ.has(player, cost)) {
                                                     econ.withdrawPlayer(player, cost);
                                                     updateSeller(player);
                                                 } else {
-                                                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.no-money"))));
+                                                    player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.no-money"))));
                                                 }
                                             } else if (economyType.equalsIgnoreCase("PlayerPoints")) {
                                                 if (playerPoints.getAPI().take(player.getUniqueId(), (int) cost)) {
                                                     updateSeller(player);
                                                 } else {
-                                                    player.sendMessage(Objects.requireNonNull(IBHexColor.color(IBConfig.getConfig().getString("messages.no-money"))));
+                                                    player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.no-money"))));
                                                 }
                                             } else {
                                                 Bukkit.getLogger().warning("Неподдерживаемый тип экономики: " + economyType);
@@ -102,11 +102,11 @@ public class IBClickEvent implements Listener {
     }
 
     private void updateSeller(Player player) {
-        this.ibUtils.getRegeneratedItem();
-        List<String> updateMessages = IBConfig.getConfig().getStringList("messages.player-update");
+        this.utils.getRegeneratedItem();
+        List<String> updateMessages = Config.getConfig().getStringList("messages.player-update");
         for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
             for (String message : updateMessages) {
-                onlinePlayer.sendMessage(IBHexColor.color(message.replace("%player%", player.getName())));
+                onlinePlayer.sendMessage(HexColor.color(message.replace("%player%", player.getName())));
             }
         }
     }
