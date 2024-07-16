@@ -1,8 +1,12 @@
 package ibotus.ibseller.utils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import ibotus.ibseller.configurations.Config;
 import ibotus.ibseller.configurations.Data;
 import ibotus.ibseller.inventories.InventorySeller;
@@ -26,7 +30,7 @@ public class Utils {
     public static ItemStack createItem(String materialName, String name, List<String> lore, Integer customModelData) {
         ItemStack item;
         if (materialName.startsWith("eyJ")) {
-            item = CustomHead.getSkull(materialName, null);
+            item = getSkull(materialName, null);
         } else {
             Material material = Material.getMaterial(materialName);
             assert (material != null);
@@ -118,6 +122,27 @@ public class Utils {
             float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
             onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
         }
+    }
+
+    public static ItemStack getSkull(String url, String path) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        if (Bukkit.getBukkitVersion().contains("1.12")) {
+            item = new ItemStack(Material.valueOf("HEAD"));
+        }
+        ItemMeta meta = item.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        profile.getProperties().put("textures", new Property("textures", url));
+        try {
+            assert (meta != null);
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        }
+        catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException var6) {
+            Bukkit.getLogger().severe("Такой головы не существует: " + path);
+        }
+        item.setItemMeta(meta);
+        return item;
     }
 }
 

@@ -16,6 +16,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,9 +35,12 @@ public final class IBSeller extends JavaPlugin {
     public void onEnable() {
         if (!setupEconomy()) {
             getLogger().severe("Vault не установлен!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
-        if (!setupPlayerPoints()) {
+        if (!hookPlayerPoints()) {
             getLogger().severe("PlayerPoints не установлен!");
+            return;
         }
 
         Data.loadYaml(this);
@@ -91,15 +95,9 @@ public final class IBSeller extends JavaPlugin {
         return true;
     }
 
-    private boolean setupPlayerPoints() {
-        if (getServer().getPluginManager().getPlugin("PlayerPoints") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<PlayerPoints> rsp = getServer().getServicesManager().getRegistration(PlayerPoints.class);
-        if (rsp == null) {
-            return false;
-        }
-        playerPoints = rsp.getProvider();
-        return true;
+    private boolean hookPlayerPoints() {
+        final Plugin plugin = this.getServer().getPluginManager().getPlugin("PlayerPoints");
+        playerPoints = (PlayerPoints) plugin;
+        return playerPoints != null;
     }
 }
