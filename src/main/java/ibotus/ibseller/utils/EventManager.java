@@ -41,7 +41,7 @@ public class EventManager {
             public void run() {
                 startEventAndCloseInventory();
             }
-        }.runTaskTimer(this.ibseller, delay, delay);
+        }.runTaskTimer(ibseller, delay, delay);
     }
 
     private void startEventAndCloseInventory() {
@@ -67,7 +67,7 @@ public class EventManager {
 
 
     public String getRemainingTime() {
-        int timePassed = (int)((System.currentTimeMillis() - this.lastUpdateTime) / 1000L);
+        int timePassed = (int)((System.currentTimeMillis() - lastUpdateTime) / 1000L);
         int updateInterval = Config.getConfig().getInt("event.time") * 60;
         int timeLeft = updateInterval - timePassed;
         return formatTime(timeLeft);

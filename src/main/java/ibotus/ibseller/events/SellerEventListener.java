@@ -91,11 +91,7 @@ public class SellerEventListener {
             throw new NullPointerException("Material name is null");
         }
         assert translatedMaterialName != null;
-        bossBar = Bukkit.createBossBar(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.bossbar.message"))
-                        .replace("%material%", translatedMaterialName)
-                        .replace("%percent%", String.valueOf(randomPercent))),
-                BarColor.valueOf(Config.getConfig().getString("event.bossbar.color")),
-                BarStyle.valueOf(Config.getConfig().getString("event.bossbar.style")));
+        bossBar = Bukkit.createBossBar(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.bossbar.message")).replace("%material%", translatedMaterialName).replace("%percent%", String.valueOf(randomPercent))), BarColor.valueOf(Config.getConfig().getString("event.bossbar.color")), BarStyle.valueOf(Config.getConfig().getString("event.bossbar.style")));
 
         new BukkitRunnable() {
             int timeLeft = eventTime;
@@ -108,7 +104,7 @@ public class SellerEventListener {
                     Data.saveData();
                     isEventRunning = false;
                     eventManager.resetUpdateTime();
-                    String topSeller = null;
+                    String topSeller;
                     double topSales = 0;
                     if (!playerSales.isEmpty()) {
                         topSeller = Collections.max(playerSales.entrySet(), Map.Entry.comparingByValue()).getKey();
@@ -138,7 +134,7 @@ public class SellerEventListener {
                         }
                     }
                     playerSales.clear();
-                    this.cancel();
+                    cancel();
                 } else {
                     bossBar.setProgress((double) timeLeft / eventTime);
                     timeLeft--;

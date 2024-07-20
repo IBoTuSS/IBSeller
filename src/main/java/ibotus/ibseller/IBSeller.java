@@ -39,8 +39,7 @@ public final class IBSeller extends JavaPlugin {
             return;
         }
         if (!hookPlayerPoints()) {
-            getLogger().severe("PlayerPoints не установлен!");
-            return;
+            getLogger().warning("PlayerPoints не установлен!");
         }
 
         Data.loadYaml(this);

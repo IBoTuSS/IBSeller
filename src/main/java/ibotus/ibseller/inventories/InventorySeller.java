@@ -35,13 +35,13 @@ public class InventorySeller implements Listener {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public Inventory InvSeller() {
-        this.title = HexColor.color(Config.getConfig().getString("inventory.title"));
+        title = HexColor.color(Config.getConfig().getString("inventory.title"));
         int size = Config.getConfig().getInt("inventory.size");
-        Inventory inv = Bukkit.createInventory(null, size, this.title);
+        Inventory inv = Bukkit.createInventory(null, size, title);
         List<Integer> sellerSlots = Config.getConfig().getIntegerList("inventory.slot-seller-item");
         for (int i = 0; i < sellerSlots.size(); ++i) {
             int slot = sellerSlots.get(i);
@@ -51,7 +51,7 @@ public class InventorySeller implements Listener {
             int count = Data.getData().getInt("items." + (i + 1) + ".count");
             double multiplier = Data.getData().getDouble("seller.multiplier");
             Integer customModelData = Data.getData().getInt("items." + (i + 1) + ".custom-model-data");
-            List<String> sellLore = this.colorizeLore(Config.getConfig().getStringList("inventory.lore-sell-item"));
+            List<String> sellLore = colorizeLore(Config.getConfig().getStringList("inventory.lore-sell-item"));
             sellLore = sellLore.stream().map(line -> line.replace("%multiplier%", String.valueOf(multiplier))).map(line -> line.replace("%price%", String.valueOf(price))).map(line -> line.replace("%count%", String.valueOf(count))).map(line -> line.replace("%amount%", String.valueOf(amount))).collect(Collectors.toList());
             ItemStack item = Utils.createItem(materialName, amount, sellLore, customModelData);
 
@@ -71,7 +71,7 @@ public class InventorySeller implements Listener {
             String materialName = Config.getConfig().getString("inventory.slots-item." + key + ".material");
             String name = HexColor.color(Config.getConfig().getString("inventory.slots-item." + key + ".name"));
             Integer customModelData = Config.getConfig().getInt("inventory.slots-item." + key + ".custom-model-data");
-            List<String> lore = this.colorizeLore(Config.getConfig().getStringList("inventory.slots-item." + key + ".lore"));
+            List<String> lore = colorizeLore(Config.getConfig().getStringList("inventory.slots-item." + key + ".lore"));
             assert (materialName != null);
             ItemStack item = Utils.createItem(materialName, name, lore, customModelData);
             inv.setItem(slot, item);
@@ -109,7 +109,7 @@ public class InventorySeller implements Listener {
             int count = Data.getData().getInt("items." + (i + 1) + ".count");
             double multiplier = Data.getData().getDouble("seller.multiplier");
             Integer customModelData = Data.getData().getInt("items." + (i + 1) + ".custom-model-data");
-            List<String> sellLore = this.colorizeLore(Config.getConfig().getStringList("inventory.lore-sell-item"));
+            List<String> sellLore = colorizeLore(Config.getConfig().getStringList("inventory.lore-sell-item"));
             sellLore = sellLore.stream().map(line -> line.replace("%multiplier%", String.valueOf(multiplier))).map(line -> line.replace("%price%", String.valueOf(price))).map(line -> line.replace("%count%", String.valueOf(count))).map(line -> line.replace("%amount%", String.valueOf(amount))).map(line -> line.replace("%total_sold%", String.valueOf(totalSold))).collect(Collectors.toList());
             ItemStack item = Utils.createItem(materialName, amount, sellLore, customModelData);
             if (SellerEventListener.isEventRunning() && Config.getConfig().getBoolean("event.enchant") && SellerEventListener.isEventItem(item)) {
@@ -144,7 +144,7 @@ public class InventorySeller implements Listener {
         String amountUpgrade = sellerLevel < maxLevel ? String.valueOf(Config.getConfig().getInt("seller-upgrade.amount-upgrade." + (sellerLevel + 1))) : Config.getConfig().getString("seller-upgrade.amount-upgrade.maximum");
         return lore.stream().map(line -> {
             if (line.contains("%update%")) {
-                line = this.SellerUpdater.replacePlaceholder(line);
+                line = SellerUpdater.replacePlaceholder(line);
             }
             if (line.contains("%total_sold%")) {
                 line = line.replace("%total_sold%", sellerLevel < maxLevel ? totalSold + "/" + amountUpgrade : Objects.requireNonNull(amountUpgrade));

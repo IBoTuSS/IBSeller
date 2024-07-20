@@ -26,7 +26,7 @@ public class SellerUpdater {
 
     public void start(InventorySeller invSeller) {
         int updateInterval = Config.getConfig().getInt("settings.update") * 60 * 20;
-        Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             resetUpdateTime();
             Data.saveItems();
             broadcastUpdateMessages();
@@ -49,16 +49,21 @@ public class SellerUpdater {
         Sound sound = Sound.valueOf(Config.getConfig().getString(soundKey + ".sound"));
         float volume = (float) Config.getConfig().getDouble(soundKey + ".volume");
         float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
-                onlinePlayer.closeInventory();
+        String invTitle = invSeller.getTitle();
+
+        if (invTitle != null) {
+            String coloredTitle = HexColor.color(invTitle);
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.getOpenInventory().getTitle().equals(coloredTitle)) {
+                    onlinePlayer.closeInventory();
+                }
+                onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
             }
-            onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
         }
     }
 
     public String getRemainingTime() {
-        int timePassed = (int)((System.currentTimeMillis() - this.lastUpdateTime) / 1000L);
+        int timePassed = (int)((System.currentTimeMillis() - lastUpdateTime) / 1000L);
         int updateInterval = Config.getConfig().getInt("settings.update") * 60;
         int timeLeft = updateInterval - timePassed;
         return formatTime(timeLeft);

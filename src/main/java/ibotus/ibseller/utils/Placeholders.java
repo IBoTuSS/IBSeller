@@ -7,6 +7,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Placeholders extends PlaceholderExpansion {
 
     private final SellerUpdater sellerUpdater;
@@ -29,7 +31,7 @@ public class Placeholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.3";
+        return "2.4";
     }
 
     @Override
@@ -44,7 +46,7 @@ public class Placeholders extends PlaceholderExpansion {
 
         if ("event".equals(identifier)) {
             if (SellerEventListener.isEventRunning) {
-                return HexColor.color(Config.getConfig().getString("event.replace.event-active"));
+                return HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.replace.event-active")));
             } else {
                 return eventManager.getRemainingTime();
             }

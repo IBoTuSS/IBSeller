@@ -48,7 +48,7 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                     player.playSound(player.getLocation(), sound, volume, pitch);
                     invSeller.openInventory(player, invSeller);
                 } else {
-                    player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
+                    player.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.permission")))));
                 }
             }
             return true;
@@ -56,22 +56,22 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase()) {
             case "reload":
                 if (sender.hasPermission("ibseller.reload")) {
-                    Config.loadYaml(this.plugin);
-                    Data.loadYaml(this.plugin);
-                    Items.loadYaml(this.plugin);
-                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.reload"))));
+                    Config.loadYaml(plugin);
+                    Data.loadYaml(plugin);
+                    Items.loadYaml(plugin);
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.reload")))));
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.permission")))));
                 }
                 break;
             case "event-start":
                 if (sender.hasPermission("ibseller.event-start")) {
                     if (SellerEventListener.isEventRunning()) {
-                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-running"))));
+                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.messages.event-running")))));
                         return true;
                     }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
+                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                             onlinePlayer.closeInventory();
                         }
                         String soundKey = "sound.event-start";
@@ -80,8 +80,8 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                         float pitch = (float) Config.getConfig().getDouble(soundKey + ".pitch");
                         onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
                     }
-                    this.sellerEventListener.startEvent();
-                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-start"))));
+                    sellerEventListener.startEvent();
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.messages.event-start")))));
                     List<String> event = Config.getConfig().getStringList("messages.seller-event");
                     String translatedMaterialName = Utils.getTranslatedMaterialName(SellerEventListener.randomItemKey);
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
@@ -90,16 +90,16 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                         }
                     }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.permission")))));
                 }
                 break;
             case "regenerate":
                 if (sender.hasPermission("ibseller.regenerate")) {
                     if (SellerEventListener.isEventRunning()) {
-                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("event.messages.event-running"))));
+                        sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("event.messages.event-running")))));
                         return true;
                     }
-                    this.SellerUpdater.resetUpdateTime();
+                    SellerUpdater.resetUpdateTime();
                     Data.saveItems();
                     List<String> updateMessages = Config.getConfig().getStringList("messages.seller-update");
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
@@ -108,7 +108,7 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                         }
                     }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
+                        if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                             onlinePlayer.closeInventory();
                         }
                         String soundKey = "sound.seller-update";
@@ -118,11 +118,11 @@ public class IBSellerCommand implements CommandExecutor, TabCompleter {
                         onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
                     }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.permission"))));
+                    sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.permission")))));
                 }
                 break;
             default:
-                sender.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.usage"))));
+                sender.sendMessage(Objects.requireNonNull(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.usage")))));
                 break;
         }
         return true;

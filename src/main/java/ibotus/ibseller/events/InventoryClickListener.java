@@ -58,6 +58,7 @@ public class InventoryClickListener implements Listener {
                                 } else if (cmd.startsWith("[update]")) {
                                     if (SellerEventListener.isEventRunning()) {
                                         player.sendMessage(Objects.requireNonNull(HexColor.color(Config.getConfig().getString("messages.event-running"))));
+                                        return;
                                     }
                                     String[] parts = cmd.split(" ");
                                     if (parts.length >= 2) {

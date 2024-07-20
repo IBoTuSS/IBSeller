@@ -39,7 +39,7 @@ public class InventorySellerListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT) {
             Player player = (Player)event.getWhoClicked();
-            if (player.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
+            if (player.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                 ItemStack clickedItem = event.getCurrentItem();
                 if (clickedItem != null && clickedItem.getType() != Material.AIR) {
                     int slot = event.getSlot();
@@ -130,10 +130,7 @@ public class InventorySellerListener implements Listener {
     }
 
     private void sendMessage(Player player, int amountToSell, String materialName, double finalPrice) {
-        player.sendMessage(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.seller-message"))
-                .replace("%amount%", String.valueOf(amountToSell))
-                .replace("%material%", Objects.requireNonNull(Utils.getItemMaterialName(materialName)))
-                .replace("%price%", String.valueOf(finalPrice))));
+        player.sendMessage(HexColor.color(Objects.requireNonNull(Config.getConfig().getString("messages.seller-message")).replace("%amount%", String.valueOf(amountToSell)).replace("%material%", Objects.requireNonNull(Utils.getItemMaterialName(materialName))).replace("%price%", String.valueOf(finalPrice))));
     }
 
     private void playSound(Player player, String soundKey) {

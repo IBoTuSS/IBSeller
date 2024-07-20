@@ -110,10 +110,10 @@ public class Utils {
     }
 
     public void getRegeneratedItem() {
-        this.SellerUpdater.resetUpdateTime();
+        SellerUpdater.resetUpdateTime();
         Data.saveItems();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(this.invSeller.getTitle()))) {
+            if (onlinePlayer.getOpenInventory().getTitle().equals(HexColor.color(invSeller.getTitle()))) {
                 onlinePlayer.closeInventory();
             }
             String soundKey = "sound.player-update";
